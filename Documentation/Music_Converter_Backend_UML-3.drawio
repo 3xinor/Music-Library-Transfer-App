@@ -1,0 +1,139 @@
+<mxfile host="app.diagrams.net" modified="2024-04-25T23:22:00.785Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4.1 Safari/605.1.15" etag="FE3owjJ5jgBUBvH4VeNV" version="24.3.0" type="device">
+  <diagram name="Page-1" id="ILy0DAQNYgPiJqq5SF2T">
+    <mxGraphModel dx="834" dy="1667" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-1" value="MusicProfile" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="695" y="40" width="390" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-2" value="- username : string&lt;div&gt;- password : string&lt;br&gt;&lt;div&gt;- platform : enum&lt;/div&gt;&lt;/div&gt;&lt;div&gt;- playLists : vector&amp;lt;Playlist&amp;gt;&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="imGzoSFmh1mY2L6UpgBo-1">
+          <mxGeometry y="26" width="390" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-3" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="imGzoSFmh1mY2L6UpgBo-1">
+          <mxGeometry y="100" width="390" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-4" value="+ MusicProfile(username : string, password : string, platform : Platform)&lt;div&gt;+ getName() : string&lt;/div&gt;&lt;div&gt;+ getPass() : string&lt;/div&gt;&lt;div&gt;+ getPlatform() : enum&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="imGzoSFmh1mY2L6UpgBo-1">
+          <mxGeometry y="140" width="390" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-5" value="Song" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="570" y="610" width="580" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-6" value="- songName : string&lt;div&gt;- artists : list&amp;lt;string&amp;gt;&lt;/div&gt;&lt;div&gt;- genre : string&lt;/div&gt;&lt;div&gt;- album : string&lt;/div&gt;&lt;div&gt;- timeLength : double&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="imGzoSFmh1mY2L6UpgBo-5">
+          <mxGeometry y="26" width="580" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-7" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="imGzoSFmh1mY2L6UpgBo-5">
+          <mxGeometry y="100" width="580" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-8" value="&lt;div&gt;+ Song(songName : string, artists : array&amp;lt;&amp;nbsp;string &amp;gt;, genre : string, album : string, timeLength : double)&lt;/div&gt;&lt;div&gt;+ getTime() : double&lt;/div&gt;&lt;div&gt;+ getName(): string&lt;/div&gt;&lt;div&gt;+ getArtists() : list&amp;lt;&amp;nbsp;string &amp;gt;&lt;/div&gt;&lt;div&gt;+ getGenre() : string&lt;/div&gt;&lt;div&gt;+ getAlbum() : string&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="imGzoSFmh1mY2L6UpgBo-5">
+          <mxGeometry y="108" width="580" height="102" as="geometry" />
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-9" value="Playlist" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="725" y="380" width="270" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-10" value="- playlist : vector&amp;lt;Song&amp;gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="imGzoSFmh1mY2L6UpgBo-9">
+          <mxGeometry y="26" width="270" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-11" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="imGzoSFmh1mY2L6UpgBo-9">
+          <mxGeometry y="80" width="270" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-12" value="+ PlayList()&lt;div&gt;+ addSong(song : Song) : None&lt;/div&gt;&lt;div&gt;+ getPlaylist() : Playlist&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="imGzoSFmh1mY2L6UpgBo-9">
+          <mxGeometry y="88" width="270" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-13" value="&lt;i&gt;WebDomainAPI &amp;lt;Abstract&amp;gt;&lt;/i&gt;" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="380" width="360" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-14" value="- domain : string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="imGzoSFmh1mY2L6UpgBo-13">
+          <mxGeometry y="26" width="360" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-15" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="imGzoSFmh1mY2L6UpgBo-13">
+          <mxGeometry y="60" width="360" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-16" value="&lt;div&gt;+ WebDomainAPI(domain : string)&lt;/div&gt;&lt;div&gt;+ connectToCloud(username : string, password : string) : bool&lt;/div&gt;&lt;div&gt;&lt;i&gt;+ findPlaylists() : vector&amp;lt;string&amp;gt;&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;+ getPlaylist(playlist : string) : bool&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;+ findSong(song : Song) : bool&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;+ uploadPlaylist(playlist : Playlist) : bool&lt;/i&gt;&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="imGzoSFmh1mY2L6UpgBo-13">
+          <mxGeometry y="68" width="360" height="92" as="geometry" />
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-17" value="AppleMusicAPI" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="10" y="580" width="270" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-19" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="imGzoSFmh1mY2L6UpgBo-17">
+          <mxGeometry y="26" width="270" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-20" value="+ WebDomainAPI(APPLEMUSICDOMAIN)&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="imGzoSFmh1mY2L6UpgBo-17">
+          <mxGeometry y="34" width="270" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-21" value="SpotifyAPI" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="660" width="270" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-22" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="imGzoSFmh1mY2L6UpgBo-21">
+          <mxGeometry y="26" width="270" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-23" value="+ WebDomainAPI(SPOTIFYDOMAIN)&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="imGzoSFmh1mY2L6UpgBo-21">
+          <mxGeometry y="34" width="270" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-24" value="SoundCloudAPI" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="100" y="740" width="270" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-25" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="imGzoSFmh1mY2L6UpgBo-24">
+          <mxGeometry y="26" width="270" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-26" value="+ WebDomainAPI(SOUNDCLOUDDOMAIN)&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="imGzoSFmh1mY2L6UpgBo-24">
+          <mxGeometry y="34" width="270" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-30" value="Extends" style="endArrow=block;endSize=16;endFill=0;html=1;rounded=0;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0.469;entryY=1.022;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="imGzoSFmh1mY2L6UpgBo-17" target="imGzoSFmh1mY2L6UpgBo-16">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="350" y="440" as="sourcePoint" />
+            <mxPoint x="510" y="440" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-32" value="Extends" style="endArrow=block;endSize=16;endFill=0;html=1;rounded=0;exitX=0.926;exitY=-0.05;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.713;entryY=1.054;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="imGzoSFmh1mY2L6UpgBo-21" target="imGzoSFmh1mY2L6UpgBo-16">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="350" y="440" as="sourcePoint" />
+            <mxPoint x="510" y="440" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-33" value="Extends" style="endArrow=block;endSize=16;endFill=0;html=1;rounded=0;exitX=0.911;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.852;entryY=1.033;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="imGzoSFmh1mY2L6UpgBo-24" target="imGzoSFmh1mY2L6UpgBo-16">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="350" y="440" as="sourcePoint" />
+            <mxPoint x="510" y="440" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-35" value="Converter" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="190" y="70" width="270" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-36" value="- sdfgsdfgsdg" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="imGzoSFmh1mY2L6UpgBo-35">
+          <mxGeometry y="26" width="270" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-37" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="imGzoSFmh1mY2L6UpgBo-35">
+          <mxGeometry y="80" width="270" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-38" value="&lt;div&gt;&lt;div&gt;+ dsfsdfafsdfgsdaf&lt;/div&gt;&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="imGzoSFmh1mY2L6UpgBo-35">
+          <mxGeometry y="88" width="270" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-39" value="" style="endArrow=diamondThin;endFill=0;endSize=24;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.418;exitY=1.036;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="imGzoSFmh1mY2L6UpgBo-4" target="imGzoSFmh1mY2L6UpgBo-9">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="470" y="410" as="sourcePoint" />
+            <mxPoint x="630" y="410" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-40" value="" style="endArrow=diamondThin;endFill=0;endSize=24;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.185;exitY=1.042;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="imGzoSFmh1mY2L6UpgBo-38" target="imGzoSFmh1mY2L6UpgBo-13">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="233" y="240" as="sourcePoint" />
+            <mxPoint x="237" y="326" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-41" value="" style="endArrow=diamondThin;endFill=0;endSize=24;html=1;rounded=0;entryX=0.007;entryY=0.784;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryPerimeter=0;" edge="1" parent="1" source="imGzoSFmh1mY2L6UpgBo-36" target="imGzoSFmh1mY2L6UpgBo-2">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="876" y="314" as="sourcePoint" />
+            <mxPoint x="880" y="400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="imGzoSFmh1mY2L6UpgBo-42" value="" style="endArrow=diamondThin;endFill=0;endSize=24;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.493;exitY=1.028;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="imGzoSFmh1mY2L6UpgBo-12" target="imGzoSFmh1mY2L6UpgBo-5">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="866" y="304" as="sourcePoint" />
+            <mxPoint x="870" y="390" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

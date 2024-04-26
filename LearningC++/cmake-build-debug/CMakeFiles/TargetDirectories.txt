@@ -1,0 +1,3 @@
+/Users/dave/Documents/Music-Library-Transfer-App/LearningC++/cmake-build-debug/CMakeFiles/LearningC__.dir
+/Users/dave/Documents/Music-Library-Transfer-App/LearningC++/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/dave/Documents/Music-Library-Transfer-App/LearningC++/cmake-build-debug/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,3 @@
+/Users/dave/Documents/Music-Library-Transfer-App/cmake-build-debug/CMakeFiles/Music_Library_Transfer_App.dir
+/Users/dave/Documents/Music-Library-Transfer-App/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/dave/Documents/Music-Library-Transfer-App/cmake-build-debug/CMakeFiles/rebuild_cache.dir
