@@ -7,10 +7,11 @@
 
 #define APPLEMUSICDOMAIN "AppleMusic.com"
 #define SOUNDCLOUDDOMAIN "Soundcloud.com"
-#define SPOTIFYDOMAIN "Spotify.com"
+#define SPOTIFYDOMAIN "https://api.spotify.com"
 
 #include <string>
 #include <vector>
+#include <curl/curl.h>
 #include "Song.h"
 #include "PlayList.h"
 
