@@ -4,7 +4,7 @@
 
 #include "AppleMusicAPI.h"
 
-AppleMusicAPI::AppleMusicAPI(string domain) : WebDomainAPI(domain) {
+AppleMusicAPI::AppleMusicAPI() : WebDomainAPI() {
 //TODO
 // do i need to do more? who knows?
 }

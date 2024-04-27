@@ -18,4 +18,10 @@ add_executable(Music_Library_Transfer_App
         Appl/WebDomainAPI.cpp
         Appl/WebDomainAPI.h
         Appl/AppleMusicAPI.h
-        Appl/AppleMusicAPI.cpp)
+        Appl/AppleMusicAPI.cpp
+        Appl/SpotifyMusicAPI.h
+        Appl/SpotifyMusicAPI.cpp)
+
+find_package(OpenSSL REQUIRED)
+include_directories(${OPENSSL_INCLUDE_DIR})
+target_link_libraries(Music_Library_Transfer_App ${OPENSSL_LIBRARIES})

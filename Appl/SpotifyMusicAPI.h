@@ -2,15 +2,15 @@
 // Created by David Exinor on 2024-04-25.
 //
 
-#ifndef MUSIC_LIBRARY_TRANSFER_APP_APPLEMUSICAPI_H
-#define MUSIC_LIBRARY_TRANSFER_APP_APPLEMUSICAPI_H
+#ifndef MUSIC_LIBRARY_TRANSFER_APP_SPOTIFYMUSICAPI_H
+#define MUSIC_LIBRARY_TRANSFER_APP_SPOTIFYMUSICAPI_H
 
 #include "WebDomainAPI.h"
 
-class AppleMusicAPI : public WebDomainAPI {
+class SpotifyMusicAPI : public WebDomainAPI {
 public:
     // Constructor
-    AppleMusicAPI();
+    SpotifyMusicAPI();
 
     /* Overriding pure virtual functions to implement api specific methods used in application */
     bool connectToCloud(string username, string password) override;
@@ -21,4 +21,4 @@ public:
 };
 
 
-#endif //MUSIC_LIBRARY_TRANSFER_APP_APPLEMUSICAPI_H
+#endif //MUSIC_LIBRARY_TRANSFER_APP_SPOTIFYMUSICAPI_H

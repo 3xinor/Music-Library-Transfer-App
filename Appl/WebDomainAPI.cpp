@@ -5,7 +5,7 @@
 #include "WebDomainAPI.h"
 
 // Constructor definition
-WebDomainAPI::WebDomainAPI(string domain) {this->webDomainAPI = std::move(domain);}
+WebDomainAPI::WebDomainAPI() {}
 
 // Deconstructor definition
 WebDomainAPI::~WebDomainAPI() {
