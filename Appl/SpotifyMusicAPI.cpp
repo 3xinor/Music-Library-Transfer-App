@@ -3,6 +3,7 @@
 //
 
 #include <random>
+#include <openssl/sha.h>
 #include "SpotifyMusicAPI.h"
 
 constexpr int CODE_VERIFIER_LENGTH = 128;

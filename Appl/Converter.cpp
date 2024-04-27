@@ -2,8 +2,6 @@
 // Created by David Exinor on 2024-04-24.
 //
 
-//#include <openssl/sha.h>
-
 #include "Converter.h"
 #include "Song.h"
 #include "PlayList.h"
