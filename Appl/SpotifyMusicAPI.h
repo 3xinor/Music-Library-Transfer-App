@@ -10,7 +10,7 @@
 class SpotifyMusicAPI : public WebDomainAPI {
 public:
     // Constructor
-    SpotifyMusicAPI(string domain);
+    SpotifyMusicAPI();
 
     /* Overriding pure virtual functions to implement api specific methods used in application */
     bool connectToCloud(string username, string password) override;

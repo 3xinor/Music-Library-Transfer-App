@@ -10,7 +10,7 @@
 class AppleMusicAPI : public WebDomainAPI {
 public:
     // Constructor
-    AppleMusicAPI(string domain);
+    AppleMusicAPI();
 
     /* Overriding pure virtual functions to implement api specific methods used in application */
     bool connectToCloud(string username, string password) override;

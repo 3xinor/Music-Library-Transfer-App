@@ -5,10 +5,6 @@
 #ifndef MUSIC_LIBRARY_TRANSFER_APP_WEBDOMAINAPI_H
 #define MUSIC_LIBRARY_TRANSFER_APP_WEBDOMAINAPI_H
 
-#define APPLEMUSICDOMAIN "AppleMusic.com"
-#define SOUNDCLOUDDOMAIN "Soundcloud.com"
-#define SPOTIFYDOMAIN "https://api.spotify.com"
-
 #include <string>
 #include <vector>
 #include <curl/curl.h>
@@ -21,7 +17,7 @@ class WebDomainAPI {
 private:
     string webDomainAPI;
 public:
-    WebDomainAPI(string domain);
+    WebDomainAPI();
     ~WebDomainAPI();
 
     /* Abstract methods to be implemented differently depending on the music platform */
