@@ -5,11 +5,15 @@
 #include <iostream>
 #include <random>
 #include <openssl/evp.h>
+#include "httplib.h"
 #include <curl/curl.h>
 #include "SpotifyMusicAPI.h"
 
+const string clientSecret = "794f812db68949d5b090ee89ea516e79";
+
 constexpr int CODE_VERIFIER_LENGTH = 128;
 const string clientID = "f4cbe8b1857d4f878aaf54102f9188d1";
+const string tokenURL = "https://accounts.spotify.com/api/token";
 const string redirectURL = "http://localhost:8888/callback";
 const string authURL = "https://accounts.spotify.com/authorize";
 
@@ -85,46 +89,37 @@ size_t writeCallback(char* ptr, size_t size, size_t nmemb, string* data) {
 
 bool SpotifyMusicAPI::connectToCloud(std::string username, std::string password) {
     /*
-     * Authorization code with PKCE(Proof Key for Code Exchange) Flow
-     * 1. code verifier
-     * 2. code challenge(sha 256)
-     * 3. request authorization
-     * 4. request an access token
-     * 5. return the access token to be used elsewhere
-     */
+     * Obtaining an access token using client credentials
 
-    // code verifier and challenge generation
-    string codeVerifier = generateCodeVerifier();
-    string codeChallenge = base64urlEncode(sha256(codeVerifier));
 
-    // Construct authorization endpoint GET request params
-    string url = authURL;
-    url += "?response_type=code";
-    url += "&client_id=" + clientID;
-    url += "&redirect_uri=" + redirectURL;
-    url += "&code_challenge_method=S256";
-    url += "&code_challenge=" + codeChallenge;
+    // base64 encode client ID and client secret
+    string authorization = "Basic " + httplib::detail::base64_encode(clientID + ":" + clientSecret);
+
+    // Create a POST request to the token URL with authorization header and grant type
+    httplib::Client client("accounts.spotify.com", 443);
+    httplib::Params params = {{"grant_type", "client_credentials"}};
+    httplib::Headers headers = {{"Authorization", authorization}};
+    auto response = client.Post(tokenURL, headers, params);
+
+    // check if request was successful
+    if (response && response->status == 200) {
+        // Parse the JSON to extract the access token
+        string access_token = response->body;
+        cout << "Access Token: " << access_token << endl;
+        return true;
+    }
+    cout << "Error: Failed to obtain access token. Response Status: " << response->status << endl << endl;
+    cout << response->body << endl;
+    return false;*/
+
+    CURL *curl;
+    CURLcode res;
+    string response;
+
 
     // initialize libcurl
-    /*
-    CURL* curl = curl_easy_init();
-    if (!curl) {
-        cerr << "Error: Unable to initialize libcurl." << endl;
-        return false;
-    }
-
-    // set the url for the GET request
-    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-
-    // perform GET request
-    CURLcode res = curl_easy_perform(curl);
-    if (res != CURLE_OK) {
-        cerr << "Error: Failed to perform GET request: " << curl_easy_strerror(res) << endl;
-        curl_easy_cleanup(curl);
-        return false;
-    }*/
-
-    return true;
+    curl = curl_easy_init();
+    return false;
 }
 
 vector<string> SpotifyMusicAPI::findPlayLists() {

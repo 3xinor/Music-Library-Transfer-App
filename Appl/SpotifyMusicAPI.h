@@ -6,6 +6,7 @@
 #define MUSIC_LIBRARY_TRANSFER_APP_SPOTIFYMUSICAPI_H
 
 #include "WebDomainAPI.h"
+#include "httplib.h"
 
 class SpotifyMusicAPI : public WebDomainAPI {
 public:
