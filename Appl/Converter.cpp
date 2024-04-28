@@ -5,7 +5,8 @@
 #include "Converter.h"
 #include "Song.h"
 #include "PlayList.h"
-#include "AppleMusicAPI.h"
+#include "SpotifyMusicAPI.h"
+#include "Server.h"
 
 #include <iostream>
 
@@ -21,11 +22,23 @@ int main() {
     playlist1.addSong(song2);
     vector<Song> allSongs = playlist1.getPlaylist();
 
-    // initialize apple music api object
-
-
     for (size_t i = 0 ; i < allSongs.size() ; ++i) {
         cout << "Song #" << i << " " << allSongs[i].getName() << endl;
     }
+
+    /***** initialize a spotify music object ******************/
+
+    // initialize and start local server on port 8888 /*
+    //Server server(8888);
+   // server.init();
+    //server.start();
+
+    // spotify get request
+    SpotifyMusicAPI spotifyUser = {};
+    bool connectStatus = spotifyUser.connectToCloud("username", "password");
+
+    //server.stop();
+
+
     return 0;
 }
