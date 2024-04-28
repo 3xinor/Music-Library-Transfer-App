@@ -9,7 +9,7 @@
 #include <curl/curl.h>
 #include "SpotifyMusicAPI.h"
 
-const string clientSecret = "794f812db68949d5b090ee89ea516e79";
+const string clientSecret = "";
 
 constexpr int CODE_VERIFIER_LENGTH = 128;
 const string clientID = "f4cbe8b1857d4f878aaf54102f9188d1";
