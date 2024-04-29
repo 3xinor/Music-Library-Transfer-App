@@ -5,8 +5,7 @@
 #include <iostream>
 #include <thread>
 #include "Server.h"
-#include "httplib.h"
-
+/*
 // Constructor
 Server::Server(int port) {
     this->port = port;
@@ -48,3 +47,4 @@ void Server::stop() {
     }
     std::cout << "Local Server has been terminated" << std::endl;
 }
+*/

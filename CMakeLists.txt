@@ -29,8 +29,8 @@ add_executable(Music_Library_Transfer_App
 find_package(OpenSSL REQUIRED)
 
 include_directories(${OPENSSL_INCLUDE_DIR}
-        ${CMAKE_SOURCE_DIR}/Libraries/cpp-httplib
-        ${CURL_DIR}/include/curl)
+        ${CURL_DIR}/include/curl
+        ${CMAKE_SOURCE_DIR}/Libraries/json/include)
 target_link_libraries(Music_Library_Transfer_App
         ${OPENSSL_LIBRARIES}
         ${CURL_DIR}/lib/libcurl.dylib)

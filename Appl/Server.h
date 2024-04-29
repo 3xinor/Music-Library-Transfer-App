@@ -5,13 +5,12 @@
 #ifndef MUSIC_LIBRARY_TRANSFER_APP_SERVER_H
 #define MUSIC_LIBRARY_TRANSFER_APP_SERVER_H
 
-#include "httplib.h"
 #include <thread>
 
 class Server {
 private:
     int port;
-    httplib::Server server;
+    //httplib::Server server;
     std::thread server_thread;
 public:
     Server(int port);

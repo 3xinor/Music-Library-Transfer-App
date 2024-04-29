@@ -6,16 +6,24 @@
 #define MUSIC_LIBRARY_TRANSFER_APP_SPOTIFYMUSICAPI_H
 
 #include "WebDomainAPI.h"
-#include "httplib.h"
+struct RequestData {
+    string url;
+    string authorization;
+    string grant_type;
+};
 
 class SpotifyMusicAPI : public WebDomainAPI {
+private:
+    // access token
+    string token;
+    string username;
 public:
     // Constructor
-    SpotifyMusicAPI();
+    SpotifyMusicAPI(string user);
 
     /* Overriding pure virtual functions to implement api specific methods used in application */
-    bool connectToCloud(string username, string password) override;
-    vector<string> findPlayLists() override;
+    bool connectToCloud() override;
+    vector<PlayList> findPlayLists() override;
     bool getPlayList(string playList) override;
     bool findSong(Song song) override;
     bool uploadPlaylist(PlayList playlist) override;

@@ -11,14 +11,14 @@ AppleMusicAPI::AppleMusicAPI() : WebDomainAPI() {
 
 /* Overriding pure virtual functions to implement api specific methods used in application */
 
-bool AppleMusicAPI::connectToCloud(std::string username, std::string password) {
+bool AppleMusicAPI::connectToCloud() {
     //TODO
     return false;
 }
 
-vector<string> AppleMusicAPI::findPlayLists() {
+vector<PlayList> AppleMusicAPI::findPlayLists() {
     //TODO
-    vector<string> temp = {};
+    vector<PlayList> temp = {};
     return temp;
 }
 

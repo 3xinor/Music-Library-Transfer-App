@@ -12,11 +12,13 @@ using namespace std;
 
 class PlayList {
 private:
+    string name;
     vector<Song> playList;
 public:
-    PlayList();
+    PlayList(string name);
     void addSong(Song song);
     vector<Song> getPlaylist();
+    string getName();
 };
 
 #endif //MUSIC_LIBRARY_TRANSFER_APP_PLAYLIST_H
