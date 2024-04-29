@@ -22,7 +22,7 @@ vector<PlayList> AppleMusicAPI::findPlayLists() {
     return temp;
 }
 
-bool AppleMusicAPI::findSong(Song song) {
+bool AppleMusicAPI::findSong(Song* song) {
     //TODO
     return false;
 }

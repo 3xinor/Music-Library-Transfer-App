@@ -19,8 +19,6 @@ void User::storePlaylists(vector<PlayList> playlists, Platform platform) {
             this->soundCloudPlaylists = std::move(playlists);
         case Platform::YoutubeMusic:
             this->youtubeMusicPlaylists = std::move(playlists);
-        default:
-            cout << "Invalid Platform given" << endl;
     }
 }
 

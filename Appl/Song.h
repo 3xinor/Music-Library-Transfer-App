@@ -15,12 +15,16 @@ private:
     vector<string> artists;
     string album;
     string release;
+    string spotifyURI;
     // duration in ms
     double timeLength;
 
 public:
     // Constructor
     Song(string songName, vector<string> artists, string album, double timeLength, string release);
+
+    // setter methods
+    void setSpotifyURI(string uri);
 
     // getter methods
     double getTime();
@@ -29,6 +33,7 @@ public:
     string getGenre();
     string getAlbum();
     string getRelease();
+    string getSpotifyURI();
 };
 
 

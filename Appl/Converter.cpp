@@ -23,6 +23,18 @@ int main() {
         // store all spotify playlists to the user object
         vector<PlayList> tempSpotifyPlaylists = spotifyUser.findPlayLists();
         user1.storePlaylists(tempSpotifyPlaylists, Platform::Spotify);
+
+        // testing search method
+        PlayList tempPlaylist = user1.getAPlaylist("Drake and Lit Fire", Platform::Spotify);
+        vector<Song> tempSongs = tempPlaylist.getPlaylist();
+        Song tempSong = std::move(tempSongs.back());
+        bool songAvailableOnSpotify = spotifyUser.findSong(&tempSong);
+        if (songAvailableOnSpotify) {
+            cout << "Song: " << tempSong.getName() << " has been found on spotify with id: " << tempSong.getSpotifyURI() << endl;
+        }
+
+        // testing create playlist method
+        spotifyUser.uploadPlaylist(tempPlaylist);
     }
 
     return 0;

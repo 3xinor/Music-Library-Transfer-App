@@ -15,10 +15,14 @@ Song::Song(string songName, vector<string> artists, string album, double timeLen
     this->timeLength = timeLength;
 }
 
+// setter method definitions
+void Song::setSpotifyURI(std::string uri) {this->spotifyURI = std::move(uri);}
+
 // getter method definitions
 double Song::getTime() { return timeLength;}
 string Song::getName() {return songName;}
 vector<string> Song::getArtists() {return artists;}
 string Song::getAlbum() {return album;}
 string Song::getRelease() {return release;}
+string Song::getSpotifyURI() {return spotifyURI;}
 
