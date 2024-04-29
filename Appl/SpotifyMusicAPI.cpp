@@ -14,9 +14,8 @@ using json = nlohmann::json;
 // Define a type alias for the tuple representing a playlist
 using PlaylistTuple = std::tuple<std::string, std::string>;
 
-const string clientSecret = "CLIENTSECRET";
-
 constexpr int CODE_VERIFIER_LENGTH = 128;
+const string clientSecret = "CLIENTSECRET";
 const string clientID = "CLIENTID";
 const string tokenURL = "https://accounts.spotify.com/api/token";
 const string redirectURL = "http://localhost:8888/callback";
@@ -283,15 +282,9 @@ vector<PlayList> SpotifyMusicAPI::findPlayLists() {
         string name = get<0>(playlist);
         string href = get<1>(playlist);
         // save playlist info after accessing HREF
-        accessHREF(token, href, name);
+        playlists.push_back(accessHREF(token, href, name));
     }
-
     return playlists;
-}
-
-bool SpotifyMusicAPI::getPlayList(std::string playList) {
-    //TODO
-    return false;
 }
 
 bool SpotifyMusicAPI::findSong(Song song) {

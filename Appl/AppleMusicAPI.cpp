@@ -22,11 +22,6 @@ vector<PlayList> AppleMusicAPI::findPlayLists() {
     return temp;
 }
 
-bool AppleMusicAPI::getPlayList(std::string playList) {
-    //TODO
-    return false;
-}
-
 bool AppleMusicAPI::findSong(Song song) {
     //TODO
     return false;

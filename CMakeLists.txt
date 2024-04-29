@@ -24,7 +24,9 @@ add_executable(Music_Library_Transfer_App
         Appl/SpotifyMusicAPI.h
         Appl/SpotifyMusicAPI.cpp
         Appl/Server.h
-        Appl/Server.cpp)
+        Appl/Server.cpp
+        Appl/User.h
+        Appl/User.cpp)
 
 find_package(OpenSSL REQUIRED)
 

@@ -15,7 +15,6 @@ public:
     /* Overriding pure virtual functions to implement api specific methods used in application */
     bool connectToCloud() override;
     vector<PlayList> findPlayLists() override;
-    bool getPlayList(string playList) override;
     bool findSong(Song song) override;
     bool uploadPlaylist(PlayList playlist) override;
 };
