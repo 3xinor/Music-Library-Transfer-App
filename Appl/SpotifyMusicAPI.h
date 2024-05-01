@@ -9,17 +9,19 @@
 struct RequestData {
     string url;
     string authorization;
-    string grant_type;
+    string authOptions;
 };
 
 class SpotifyMusicAPI : public WebDomainAPI {
 private:
     // access token
-    string token;
+    string userToken;
+    string appToken;
     string username;
+    string* spotifyAuthorizationCodePtr;
 public:
     // Constructor
-    SpotifyMusicAPI(string user);
+    SpotifyMusicAPI(string user, string* spotifyAuthorizationCodePtr);
 
     /* Overriding pure virtual functions to implement api specific methods used in application */
     bool connectToCloud() override;

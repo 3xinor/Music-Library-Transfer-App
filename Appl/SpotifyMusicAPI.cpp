@@ -2,6 +2,11 @@
 // Created by David Exinor on 2024-04-25.
 //
 
+/* to be removed once website redirect works correctly */
+#include <chrono>
+#include <thread>
+
+
 #include <iostream>
 #include <random>
 #include <tuple>
@@ -16,13 +21,14 @@ using PlaylistTuple = std::tuple<std::string, std::string>;
 
 constexpr int CODE_VERIFIER_LENGTH = 128;
 const string clientSecret = "CLIENTSECRET";
-const string clientID = "f4cbe8b1857d4f878aaf54102f9188d1";
+const string clientID = "CLIENTID";
 const string tokenURL = "https://accounts.spotify.com/api/token";
 const string redirectURL = "http://localhost:8888/callback";
 
 
-SpotifyMusicAPI::SpotifyMusicAPI(string user) : WebDomainAPI() {
+SpotifyMusicAPI::SpotifyMusicAPI(string user, string* spotifyAuthorizationCodePtr) : WebDomainAPI() {
     this->username = user;
+    this->spotifyAuthorizationCodePtr = spotifyAuthorizationCodePtr;
 }
 
 /********* Spotify API specific functions *********/
@@ -65,6 +71,25 @@ size_t writeCallback(void *contents, size_t size, size_t nmemb, string *response
     return size *nmemb;
 }
 
+/*
+ * Requests user spotify authorization
+ * Must follow given link to and log in for application to continue
+ */
+void requestAuthorization() {
+    string scopes = "playlist-modify-public";
+
+    // construct authorization url
+    string authorizationURL = "https://accounts.spotify.com/authorize?";
+    authorizationURL += "client_id=" + clientID;
+    authorizationURL += "&response_type=code";
+    authorizationURL += "&redirect_uri=" + redirectURL;
+    authorizationURL += "&scope=" + scopes;
+
+    // REDIRECT user to this url simple 30 sec timeout is used for now ////////////////////////////////////////
+    cout << "Authorization URL: " << authorizationURL << endl;
+    this_thread::sleep_for(chrono::seconds(30));
+}
+
 // function to make POST request
 string make_post_request(const RequestData &requestData) {
     CURL *curl;
@@ -79,12 +104,12 @@ string make_post_request(const RequestData &requestData) {
 
         // set the Authorization header
         struct curl_slist *headers = NULL;
+        headers = curl_slist_append(headers, "Content-Type: application/x-www-form-urlencoded");
         headers = curl_slist_append(headers, ("Authorization: " + requestData.authorization).c_str());
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 
         // set the POST data
-        string postData = "grant_type=" + requestData.grant_type + "&scope=playlist-modify-public";
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postData.c_str());
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, requestData.authOptions.c_str());
 
         // set the write callback function
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallback);
@@ -106,6 +131,7 @@ string make_post_request(const RequestData &requestData) {
         cerr << "Error: Failed to initialize libcurl." << endl;
         return "";
     }
+    cout << "Token Request Response: " << response << endl;
     return response;
 }
 
@@ -347,19 +373,44 @@ bool createSpotifyPlaylist(string playlistName, string user, string token) {
 
 bool SpotifyMusicAPI::connectToCloud() {
     /*
-     *  Obtaining an access token using client credentials
+     *  Obtaining an access token using authorization code
      */
+
+    /********** Creating a unique token for both the user and application *************/
+    // request spotify authorization from user(30 second timeout to do so)
+    requestAuthorization();
 
     cout << "Connecting to Spotify API to generate access token" << endl;
     // bas64 encode client ID and client secret for authorization header
     string authorization = "Basic ";
     authorization += base64Encode(clientID + ":" + clientSecret);
 
-    // create request data
+    // create request data for app token
+    RequestData requestDataApp;
+    requestDataApp.url = tokenURL;
+    requestDataApp.authorization = authorization;
+    requestDataApp.authOptions = "&grant_type=client_credentials&scope=playlist-modify-public";
+
+    // make the POST request
+    string responseAppToken = make_post_request(requestDataApp);
+
+    // check if the request was successful
+    if (!responseAppToken.empty()) {
+        // extract token from spotify authorization response
+        json responseApp_json = json::parse(responseAppToken);
+        string appAccess_token = responseApp_json["access_token"];
+        appToken = appAccess_token;
+        cout << "Application Access Token: " << appToken << endl;
+    }
+
+    // create request data for user token
     RequestData requestData;
     requestData.url = tokenURL;
     requestData.authorization = authorization;
-    requestData.grant_type = "client_credentials";
+    requestData.authOptions = *spotifyAuthorizationCodePtr +
+                                "&redirect_uri=" + redirectURL +
+                                "&grant_type=authorization_code"
+                                + "&scope=playlist-modify-public";
 
     // make the POST request
     string response = make_post_request(requestData);
@@ -369,11 +420,11 @@ bool SpotifyMusicAPI::connectToCloud() {
         // extract token from spotify authorization response
         json response_json = json::parse(response);
         string access_token = response_json["access_token"];
-        token = access_token;
-        cout << "Access Token: " << token << endl;
+        userToken = access_token;
+        cout << "User Access Token: " << userToken << endl;
         return true;
-        cout << "Connection to API completed" << endl << endl;
     }
+
     return false;
 }
 
@@ -381,12 +432,12 @@ vector<PlayList> SpotifyMusicAPI::findPlayLists() {
     cout << "Searching for all user playlists" << endl;
     vector<PlayList> playlists;
     // find all playlists refs for the user
-    vector<PlaylistTuple> playlistTuples = acquirePlaylistHREFs(username, token);
+    vector<PlaylistTuple> playlistTuples = acquirePlaylistHREFs(username, appToken);
     for (const auto& playlist : playlistTuples) {
         string name = get<0>(playlist);
         string href = get<1>(playlist);
         // save playlist info after accessing HREF
-        playlists.push_back(accessHREF(token, href, name));
+        playlists.push_back(accessHREF(appToken, href, name));
     }
     return playlists;
 }
@@ -398,7 +449,7 @@ vector<PlayList> SpotifyMusicAPI::findPlayLists() {
  */
 bool SpotifyMusicAPI::findSong(Song* song) {
     // use search api endpoint to find all relevant songs
-    string response = songQuery(token, *song);
+    string response = songQuery(appToken, *song);
     string songURI;
     // convert response string into json
     json responseJson = json::parse(response);
@@ -422,7 +473,7 @@ bool SpotifyMusicAPI::findSong(Song* song) {
 
 bool SpotifyMusicAPI::uploadPlaylist(PlayList playlist) {
     // create a new playlist
-    bool created = createSpotifyPlaylist("TESTER 1", username, token);
+    bool created = createSpotifyPlaylist("TESTER 1", username, userToken);
     if (created) {
         // upload playlist catalogue to cloud
     }
