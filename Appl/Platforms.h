@@ -8,6 +8,7 @@
 enum class Platform {
     AppleMusic,
     Spotify,
-    SoundCloud
+    SoundCloud,
+    YoutubeMusic
 };
 #endif //MUSIC_LIBRARY_TRANSFER_APP_PLATFORMS_H

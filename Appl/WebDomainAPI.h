@@ -21,10 +21,9 @@ public:
     ~WebDomainAPI();
 
     /* Abstract methods to be implemented differently depending on the music platform */
-    virtual bool connectToCloud(string username, string password) = 0;
-    virtual vector<string> findPlayLists() = 0;
-    virtual bool getPlayList(string playList) = 0;
-    virtual bool findSong(Song song) = 0;
+    virtual bool connectToCloud() = 0;
+    virtual vector<PlayList> findPlayLists() = 0;
+    virtual bool findSong(Song* song) = 0;
     virtual bool uploadPlaylist(PlayList playlist) = 0;
 };
 

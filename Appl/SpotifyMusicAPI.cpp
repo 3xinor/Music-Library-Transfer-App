@@ -2,143 +2,481 @@
 // Created by David Exinor on 2024-04-25.
 //
 
+/* to be removed once website redirect works correctly */
+#include <chrono>
+#include <thread>
+
+
 #include <iostream>
 #include <random>
+#include <tuple>
 #include <openssl/evp.h>
-#include "httplib.h"
 #include <curl/curl.h>
+#include "nlohmann/json.hpp"
 #include "SpotifyMusicAPI.h"
 
-const string clientSecret = "";
+using json = nlohmann::json;
+// Define a type alias for the tuple representing a playlist
+using PlaylistTuple = std::tuple<std::string, std::string>;
 
 constexpr int CODE_VERIFIER_LENGTH = 128;
-const string clientID = "f4cbe8b1857d4f878aaf54102f9188d1";
+const string clientSecret = "CLIENTSECRET";
+const string clientID = "CLIENTID";
 const string tokenURL = "https://accounts.spotify.com/api/token";
 const string redirectURL = "http://localhost:8888/callback";
-const string authURL = "https://accounts.spotify.com/authorize";
 
 
-SpotifyMusicAPI::SpotifyMusicAPI() : WebDomainAPI() {
-    //TODO
-    // do i need to do more? who knows?
+SpotifyMusicAPI::SpotifyMusicAPI(string user, string* spotifyAuthorizationCodePtr) : WebDomainAPI() {
+    this->username = user;
+    this->spotifyAuthorizationCodePtr = spotifyAuthorizationCodePtr;
 }
 
 /********* Spotify API specific functions *********/
 
-/*
- * Generates and returns a PKCE compliant string
- */
-string generateCodeVerifier() {
-    const string charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~";
-    random_device rand;
-    mt19937 gen(rand());
-    uniform_int_distribution<int> dist(0, charset.size() - 1);
+// Encode given string for client id/secret encoding
+string base64Encode(const string &input) {
+    const std::string base64_chars =
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            "abcdefghijklmnopqrstuvwxyz"
+            "0123456789+/";
 
-    string codeVerifier;
-    for (int i = 0 ; i < CODE_VERIFIER_LENGTH ; ++i) {
-        codeVerifier += charset[dist(gen)];
+    std::string encoded;
+    int bits = 0;
+    int bit_count = 0;
+
+    for (unsigned char c : input) {
+        bits = (bits << 8) + c;
+        bit_count += 8;
+        while (bit_count >= 6) {
+            encoded.push_back(base64_chars[(bits >> (bit_count - 6)) & 0x3F]);
+            bit_count -= 6;
+        }
     }
-    return codeVerifier;
-}
 
-/*
- * Hashes a string using SHA-256 algorithm
- */
-string sha256(const string& input) {
-    EVP_MD_CTX *mdctx;
-    const EVP_MD *md;
-    unsigned char hash[EVP_MAX_MD_SIZE];
-    unsigned int hashLen;
-
-    md = EVP_sha256();
-    mdctx = EVP_MD_CTX_new();
-    EVP_DigestInit_ex(mdctx, md, NULL);
-    EVP_DigestUpdate(mdctx, input.c_str(), input.length());
-    EVP_DigestFinal_ex(mdctx, hash, &hashLen);
-    EVP_MD_CTX_free(mdctx);
-
-    string hashStr(reinterpret_cast<char*>(hash), hashLen);
-    return hashStr;
-}
-
-/*
- * Calculate Base64URL-encoded string
- */
-string base64urlEncode(const string& input) {
-    string encoded;
-    EVP_EncodeBlock(reinterpret_cast<unsigned char*>(&encoded[0]), reinterpret_cast<const unsigned char*>(&input[0]), input.size());
-    size_t padding = input.size() % 3;
-    if (padding > 0) {
-        encoded.resize(encoded.size() - padding);
+    if (bit_count > 0) {
+        bits <<= (6 - bit_count);
+        encoded.push_back(base64_chars[bits & 0x3F]);
     }
-    replace(encoded.begin(), encoded.end(),'+', '-');
-    replace(encoded.begin(), encoded.end(),'/', '-');
+
+    while (encoded.size() % 4) {
+        encoded.push_back('=');
+    }
 
     return encoded;
 }
 
-/*
- * Callback function to write repsonse data
- */
-size_t writeCallback(char* ptr, size_t size, size_t nmemb, string* data) {
-    data->append(ptr, size * nmemb);
-    return size * nmemb;
+// callback function to write response data
+size_t writeCallback(void *contents, size_t size, size_t nmemb, string *response) {
+    response->append((char *)contents, size * nmemb);
+    return size *nmemb;
 }
 
-/********* Overriding pure virtual functions to implement api specific methods used in application *********/
+/*
+ * Requests user spotify authorization
+ * Must follow given link to and log in for application to continue
+ */
+void requestAuthorization() {
+    string scopes = "playlist-modify-public";
 
-bool SpotifyMusicAPI::connectToCloud(std::string username, std::string password) {
-    /*
-     * Obtaining an access token using client credentials
+    // construct authorization url
+    string authorizationURL = "https://accounts.spotify.com/authorize?";
+    authorizationURL += "client_id=" + clientID;
+    authorizationURL += "&response_type=code";
+    authorizationURL += "&redirect_uri=" + redirectURL;
+    authorizationURL += "&scope=" + scopes;
 
+    // REDIRECT user to this url simple 30 sec timeout is used for now ////////////////////////////////////////
+    cout << "Authorization URL: " << authorizationURL << endl;
+    this_thread::sleep_for(chrono::seconds(30));
+}
 
-    // base64 encode client ID and client secret
-    string authorization = "Basic " + httplib::detail::base64_encode(clientID + ":" + clientSecret);
-
-    // Create a POST request to the token URL with authorization header and grant type
-    httplib::Client client("accounts.spotify.com", 443);
-    httplib::Params params = {{"grant_type", "client_credentials"}};
-    httplib::Headers headers = {{"Authorization", authorization}};
-    auto response = client.Post(tokenURL, headers, params);
-
-    // check if request was successful
-    if (response && response->status == 200) {
-        // Parse the JSON to extract the access token
-        string access_token = response->body;
-        cout << "Access Token: " << access_token << endl;
-        return true;
-    }
-    cout << "Error: Failed to obtain access token. Response Status: " << response->status << endl << endl;
-    cout << response->body << endl;
-    return false;*/
-
+// function to make POST request
+string make_post_request(const RequestData &requestData) {
     CURL *curl;
     CURLcode res;
     string response;
 
-
     // initialize libcurl
     curl = curl_easy_init();
+    if (curl) {
+        // set the url
+        curl_easy_setopt(curl, CURLOPT_URL, requestData.url.c_str());
+
+        // set the Authorization header
+        struct curl_slist *headers = NULL;
+        headers = curl_slist_append(headers, "Content-Type: application/x-www-form-urlencoded");
+        headers = curl_slist_append(headers, ("Authorization: " + requestData.authorization).c_str());
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+
+        // set the POST data
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, requestData.authOptions.c_str());
+
+        // set the write callback function
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallback);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+
+        // Perform the request
+        res = curl_easy_perform(curl);
+
+        // Cleanup
+        curl_easy_cleanup(curl);
+        curl_slist_free_all(headers);
+
+        // check for errors
+        if (res != CURLE_OK) {
+            cerr << "Error: Failed to perform POST request: " << curl_easy_strerror(res) << endl;
+            return "";
+        }
+    } else {
+        cerr << "Error: Failed to initialize libcurl." << endl;
+        return "";
+    }
+    cout << "Token Request Response: " << response << endl;
+    return response;
+}
+
+// aquires the playlist href links for the user
+vector<PlaylistTuple> acquirePlaylistHREFs(string username, string token){
+    cout << "Consolidating Playlist HREFs" << endl;
+    // return list containing all hrefs for each playlist
+    vector<PlaylistTuple> playlists = {};
+
+    // format playlists endpoint for given user
+    string playlistsURL = "https://api.spotify.com/v1/users/{user_id}/playlists";
+    size_t pos = playlistsURL.find("{user_id}");
+    if (pos != string::npos) {
+        playlistsURL.replace(pos, string("{user_id}").length(), username);
+    }
+
+    // initialize llibcurl
+    CURL *curl = curl_easy_init();
+    if (curl) {
+        // set the URL
+        curl_easy_setopt(curl, CURLOPT_URL, playlistsURL.c_str());
+
+        // set the Authorization header
+        string authHeader = "Authorization: Bearer " + token;
+        struct curl_slist *headers = NULL;
+        headers = curl_slist_append(headers, authHeader.c_str());
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+
+        // set the write callback function
+        string response;
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallback);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+
+        // perform the request
+        CURLcode res = curl_easy_perform(curl);
+
+        // check for errors
+        if (res != CURLE_OK) {
+            cerr << "Error: Failed to perform the GET request: " << curl_easy_strerror(res) << endl;
+
+        } else {
+            // parsing and storing each playlists href url
+            json response_json = json::parse(response);
+
+            // check if the "items" array exists in the repsonse
+            if (response_json.find("items") != response_json.end() && response_json["items"].is_array()) {
+                // iterate through the "items" array
+                for (const auto& item : response_json["items"]) {
+                    // Check if the "tracks" object exists for the current object
+                    if (item.find("tracks") != item.end() && item["tracks"].is_object()) {
+                        // get and store the "href" and name for each playlist
+                        string href = item["tracks"]["href"];
+                        string name = item["name"];
+                        playlists.push_back(make_tuple(name, href));
+                    }
+                }
+            }
+        }
+
+        // cleanup
+        curl_easy_cleanup(curl);
+        curl_slist_free_all(headers);
+    } else {
+        cerr << "Error: Failed to initialize libcurl." << endl;
+    }
+
+    return playlists;
+}
+
+// access href endpoint
+PlayList accessHREF(string token, string href, string playlistName) {
+    // create a new playlist object
+    cout << "Accessing HREF for the Playlist: " << playlistName << endl;
+    PlayList newPlaylist = {playlistName};
+    // initialize llibcurl
+    CURL *curl = curl_easy_init();
+    if (curl) {
+        // set the URL
+        curl_easy_setopt(curl, CURLOPT_URL, href.c_str());
+
+        // set the Authorization header
+        string authHeader = "Authorization: Bearer " + token;
+        struct curl_slist *headers = NULL;
+        headers = curl_slist_append(headers, authHeader.c_str());
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+
+        // set the write callback function
+        string response;
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallback);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+
+        // perform the request
+        CURLcode res = curl_easy_perform(curl);
+
+        // check for errors
+        if (res != CURLE_OK) {
+            cerr << "Error: Failed to perform the GET request: " << curl_easy_strerror(res) << endl;
+
+        } else {
+            // parsing href response json for all tracks and related info
+            json responseJson = json::parse(response);
+
+            // check if the "items" array exists in response
+            if (responseJson.find("items") != responseJson.end() && responseJson["items"].is_array()) {
+                // iterate through the "items" array
+                for (const auto& item : responseJson["items"]) {
+                    // find all relevant song info
+                    string songName = item["track"]["name"];
+                    string album = item["track"]["album"]["name"];
+                    string release = item["track"]["album"]["release_date"];
+                    double timeLength = item["track"]["duration_ms"];
+                    // append all artists
+                    vector<string> artists;
+                    for (const auto& artist : item["track"]["artists"]) {
+                        artists.push_back(artist["name"]);
+                    }
+                    cout << "\t\tCreating a Song object for: " << songName << endl;
+                    // create a Song object and add it to the new Playlist
+                    Song newSong = {songName, artists, album, timeLength, release};
+                    newPlaylist.addSong(newSong);
+                }
+            }
+        }
+
+        // cleanup
+        curl_easy_cleanup(curl);
+        curl_slist_free_all(headers);
+    } else {
+        cerr << "Error: Failed to initialize libcurl." << endl;
+    }
+    return newPlaylist;
+}
+
+// access spotify api endpoint and return the response
+string songQuery(string token, Song song) {
+    // construct the search query URL
+    string searchURL = "https://api.spotify.com/v1/search?q=";
+    searchURL += curl_easy_escape(nullptr, song.getName().c_str(), song.getName().length());
+    searchURL += "+artist:";
+    for (const auto& artist : song.getArtists()) {
+        searchURL += curl_easy_escape(nullptr, artist.c_str(), artist.length());
+        searchURL += ",";
+    }
+    searchURL.pop_back(); // remove the last comma
+    searchURL += "&type=track";
+
+    // initialize libcurl
+    CURL *curl = curl_easy_init();
+    if (!curl) {
+        cerr << "Failed to initialize libcurl." << endl;
+        return "";
+    }
+
+    // set the request URL
+    curl_easy_setopt(curl, CURLOPT_URL, searchURL.c_str());
+    string response;
+
+    // set the Authorization header
+    string authHeader = "Authorization: Bearer " + token;
+    struct curl_slist *headers = NULL;
+    headers = curl_slist_append(headers, authHeader.c_str());
+    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+
+    // set write callback function to receive response data
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallback);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+
+    // make request to api endpoint
+    CURLcode res = curl_easy_perform(curl);
+    if (res != CURLE_OK) {
+        cerr << "Failed to perform HTTP request: " << curl_easy_strerror(res) << endl;
+        curl_easy_cleanup(curl);
+        return "";
+    }
+
+    // cleanup libcurl
+    curl_easy_cleanup(curl);
+
+    // return the response
+    return response;
+}
+
+/*
+ * Creates an empty spotify playlist
+ * Args:
+ *      playlistName -> the desired name of playlist
+ *      NOTE : The created playlist must be set to public for program to interact with it
+ * returns true if successful, false otherwise
+ */
+bool createSpotifyPlaylist(string playlistName, string user, string token) {
+    string playlistURL = "https://api.spotify.com/v1/users/" + user + "/playlists";
+    // initialize curl
+    CURL* curl = curl_easy_init();
+    if (curl) {
+        // set curl options
+        curl_easy_setopt(curl, CURLOPT_URL, playlistURL.c_str());
+        curl_easy_setopt(curl, CURLOPT_POST, 1L);
+
+        // set authorization and content type headers
+        string authHeader = "Authorization: Bearer " + token;
+        struct curl_slist *headers = NULL;
+        headers = curl_slist_append(headers, authHeader.c_str());
+        headers = curl_slist_append(headers, "Content-Type: application/json");
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+
+        // set request body (json payload) **** need to CONFIGURE the PAYLOAD
+        string jsonPayload = "{\"name\":\"" + playlistName + "\",\"description\":\"A playlist created using the Music-Library-Transfer-App\",\"public\":true}";
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, jsonPayload.c_str());
+
+        // response data
+        string response;
+
+        // set the callback function to handle response
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallback);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+
+        // perform the request
+        CURLcode res = curl_easy_perform(curl);
+        if (res != CURLE_OK) {
+            cerr << "cURL request to generate Playlist failed: " << curl_easy_strerror(res) << endl;
+            // clean up
+            curl_slist_free_all(headers);
+            curl_easy_cleanup(curl);
+            return false;
+        } else {
+            // clean up
+            curl_slist_free_all(headers);
+            curl_easy_cleanup(curl);
+            cout << "Playlist created successfully!" << endl;
+            cout << response << endl;
+            return true;
+        }
+    } else {
+        cerr << "Failed to initialize cURL!" << endl;
+        return false;
+    }
+}
+/********* Overriding pure virtual functions to implement api specific methods used in application *********/
+
+bool SpotifyMusicAPI::connectToCloud() {
+    /*
+     *  Obtaining an access token using authorization code
+     */
+
+    /********** Creating a unique token for both the user and application *************/
+    // request spotify authorization from user(30 second timeout to do so)
+    requestAuthorization();
+
+    cout << "Connecting to Spotify API to generate access token" << endl;
+    // bas64 encode client ID and client secret for authorization header
+    string authorization = "Basic ";
+    authorization += base64Encode(clientID + ":" + clientSecret);
+
+    // create request data for app token
+    RequestData requestDataApp;
+    requestDataApp.url = tokenURL;
+    requestDataApp.authorization = authorization;
+    requestDataApp.authOptions = "&grant_type=client_credentials&scope=playlist-modify-public";
+
+    // make the POST request
+    string responseAppToken = make_post_request(requestDataApp);
+
+    // check if the request was successful
+    if (!responseAppToken.empty()) {
+        // extract token from spotify authorization response
+        json responseApp_json = json::parse(responseAppToken);
+        string appAccess_token = responseApp_json["access_token"];
+        appToken = appAccess_token;
+        cout << "Application Access Token: " << appToken << endl;
+    }
+
+    // create request data for user token
+    RequestData requestData;
+    requestData.url = tokenURL;
+    requestData.authorization = authorization;
+    requestData.authOptions = *spotifyAuthorizationCodePtr +
+                                "&redirect_uri=" + redirectURL +
+                                "&grant_type=authorization_code"
+                                + "&scope=playlist-modify-public";
+
+    // make the POST request
+    string response = make_post_request(requestData);
+
+    // check if the request was successful
+    if (!response.empty()) {
+        // extract token from spotify authorization response
+        json response_json = json::parse(response);
+        string access_token = response_json["access_token"];
+        userToken = access_token;
+        cout << "User Access Token: " << userToken << endl;
+        return true;
+    }
+
     return false;
 }
 
-vector<string> SpotifyMusicAPI::findPlayLists() {
-    //TODO
-    vector<string> temp = {};
-    return temp;
+vector<PlayList> SpotifyMusicAPI::findPlayLists() {
+    cout << "Searching for all user playlists" << endl;
+    vector<PlayList> playlists;
+    // find all playlists refs for the user
+    vector<PlaylistTuple> playlistTuples = acquirePlaylistHREFs(username, appToken);
+    for (const auto& playlist : playlistTuples) {
+        string name = get<0>(playlist);
+        string href = get<1>(playlist);
+        // save playlist info after accessing HREF
+        playlists.push_back(accessHREF(appToken, href, name));
+    }
+    return playlists;
 }
 
-bool SpotifyMusicAPI::getPlayList(std::string playList) {
-    //TODO
-    return false;
-}
+/*
+ * Find a song from spotifies catalogue and return the href of the song.
+ * Note: The first occurence of a track of album type single will be captured
+ * The function returns true if the song was found and false otherwise.
+ */
+bool SpotifyMusicAPI::findSong(Song* song) {
+    // use search api endpoint to find all relevant songs
+    string response = songQuery(appToken, *song);
+    string songURI;
+    // convert response string into json
+    json responseJson = json::parse(response);
 
-bool SpotifyMusicAPI::findSong(Song song) {
-    //TODO
+    // search response for track uri
+    if (responseJson["tracks"]["items"].is_array()) {
+        // iterate through the "items" of array
+        for (const auto& item : responseJson["tracks"]["items"]) {
+            // find the href of first single
+            if (item["album"]["album_type"] == "single") {
+                songURI = item["album"]["id"];
+                // store the uri in the pass by referenced song object
+                song->setSpotifyURI(songURI);
+                return true;
+            }
+        }
+    }
+    // iterated through entire response and did not find any items of album type : single
     return false;
 }
 
 bool SpotifyMusicAPI::uploadPlaylist(PlayList playlist) {
-    //TODO
+    // create a new playlist
+    bool created = createSpotifyPlaylist("TESTER 1", username, userToken);
+    if (created) {
+        // upload playlist catalogue to cloud
+    }
+
     return false;
 }

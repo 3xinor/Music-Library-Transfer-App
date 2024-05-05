@@ -12,21 +12,28 @@ using namespace std;
 class Song {
 private:
     string songName;
-    list<string> artists;
-    string genre;
+    vector<string> artists;
     string album;
+    string release;
+    string spotifyURI;
+    // duration in ms
     double timeLength;
 
 public:
     // Constructor
-    Song(string songName, list<string> artists, string album, string genre, double timeLength);
+    Song(string songName, vector<string> artists, string album, double timeLength, string release);
+
+    // setter methods
+    void setSpotifyURI(string uri);
 
     // getter methods
     double getTime();
     string getName();
-    list<string> getArtists();
+    vector<string> getArtists();
     string getGenre();
     string getAlbum();
+    string getRelease();
+    string getSpotifyURI();
 };
 
 

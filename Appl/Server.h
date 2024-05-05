@@ -5,29 +5,16 @@
 #ifndef MUSIC_LIBRARY_TRANSFER_APP_SERVER_H
 #define MUSIC_LIBRARY_TRANSFER_APP_SERVER_H
 
-#include "httplib.h"
-#include <thread>
+#include <boost/asio.hpp>
+#include <boost/beast.hpp>
+#include <iostream>
 
-class Server {
-private:
-    int port;
-    httplib::Server server;
-    std::thread server_thread;
-public:
-    Server(int port);
+using tcp = boost::asio::ip::tcp;
+namespace http = boost::beast::http;
 
-    // initializes server
-    void init();
+bool handleRequest(http::request<http::string_body>& request, tcp::socket& socket, std::string* spotifyAuthorizationCodePtr);
 
-    // starts server
-    void start();
-
-    // stops server
-    void stop();
-
-    // thread function
-    void threadFunction();
-};
+void runServer(int* running, std::string* spotifyAuthorizationCodePtr);
 
 
 #endif //MUSIC_LIBRARY_TRANSFER_APP_SERVER_H

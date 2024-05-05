@@ -5,10 +5,12 @@
 #include "PlayList.h"
 
 // Constructor definition
-PlayList::PlayList() {}
+PlayList::PlayList(string name) {this->name = std::move(name);}
 
 void PlayList::addSong(Song song) {
     playList.push_back(song);
 }
+
+string PlayList::getName() {return name;}
 
 vector<Song> PlayList::getPlaylist() {return playList;}

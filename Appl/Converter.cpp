@@ -7,38 +7,56 @@
 #include "PlayList.h"
 #include "SpotifyMusicAPI.h"
 #include "Server.h"
+#include "User.h"
 
 #include <iostream>
 
+#include <chrono>
+#include <thread>
+
 int main() {
-    // initialize a song
-    list<string> testList1 = {"Estelle", "Kanye"};
-    list<string> testList2 = {"Frank Ocean"};
-    Song song1 = {"American Boy", testList1, "Shine", "R&B/SOUL", 12.76};
-    Song song2 = {"Chanel", testList2, "Single", "POP", 12.76};
 
-    PlayList playlist1 = {};
-    playlist1.addSong(song1);
-    playlist1.addSong(song2);
-    vector<Song> allSongs = playlist1.getPlaylist();
+    // initialize a user
+    User user1 = {};
 
-    for (size_t i = 0 ; i < allSongs.size() ; ++i) {
-        cout << "Song #" << i << " " << allSongs[i].getName() << endl;
-    }
+    // initialize separate thread to run server
+    string spotifyAuthorizationCode;
+    int running = true;
+    cout << "Initializing Server" << endl;
+    thread t([&]() {
+        runServer(&running, &spotifyAuthorizationCode);
+    });
 
-    /***** initialize a spotify music object ******************/
+    cout << endl << "Please click on th below link to continue application and login within 30 seconds" << endl << endl;
 
-    // initialize and start local server on port 8888 /*
-    //Server server(8888);
-   // server.init();
-    //server.start();
-
+    /************ initialize a spotify music object ******************/
     // spotify get request
-    SpotifyMusicAPI spotifyUser = {};
-    bool connectStatus = spotifyUser.connectToCloud("username", "password");
+    SpotifyMusicAPI spotifyUser = {"djez_from_the_6.1.3.", &spotifyAuthorizationCode};
+    bool connectStatus = spotifyUser.connectToCloud();
+    if (connectStatus) {
+        // store all spotify playlists to the user object
+        vector<PlayList> tempSpotifyPlaylists = spotifyUser.findPlayLists();
+        user1.storePlaylists(tempSpotifyPlaylists, Platform::Spotify);
 
-    //server.stop();
+        // testing search method
+         PlayList tempPlaylist = user1.getAPlaylist("Drake and Lit Fire", Platform::Spotify);
+         vector<Song> tempSongs = tempPlaylist.getPlaylist();
+         Song tempSong = std::move(tempSongs.back());
+         bool songAvailableOnSpotify = spotifyUser.findSong(&tempSong);
+         if (songAvailableOnSpotify) {
+             cout << "Song: " << tempSong.getName() << " has been found on spotify with id: " << tempSong.getSpotifyURI() << endl;
+         }
 
+         // testing create playlist method
+         //PlayList tempPlaylist = {"Test"};
+         //spotifyUser.uploadPlaylist(tempPlaylist);
+     }
 
-    return 0;
-}
+     // ensure to stop server and exit program
+     cout << "Stopping server" << endl;
+     running = false;
+     t.join();
+
+     cout << "End of Program" << endl;
+     return 0;
+ }

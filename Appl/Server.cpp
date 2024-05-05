@@ -3,48 +3,42 @@
 //
 
 #include <iostream>
-#include <thread>
 #include "Server.h"
-#include "httplib.h"
 
-// Constructor
-Server::Server(int port) {
-    this->port = port;
-}
+bool handleRequest(http::request<http::string_body>& request, tcp::socket& socket, std::string* spotifyAuthorizationCodePtr) {
+    // Extract the URL path and query parameters from requests
+    std::string target = request.target();
+    std::string query_params = target.substr(target.find('?') + 1);
 
-// Create and initialize server
-void Server::init() {
-    server.Get("/authorize", [](const httplib::Request& request, httplib::Response& response) {
-        // Extract query params from request
-        // Extract query parameters from the request
-        auto response_type = request.get_param_value("response_type");
-        auto client_id = request.get_param_value("client_id");
-        auto redirect_uri = request.get_param_value("redirect_uri");
-        auto code_challenge_method = request.get_param_value("code_challenge_method");
-        auto code_challenge = request.get_param_value("code_challenge");
-
-        // print params to console
-        std::cout << "response_type: " << response_type << std::endl;
-        std::cout << "client_id: " << client_id << std::endl;
-        std::cout << "redirect_uri: " << redirect_uri << std::endl;
-        std::cout << "code_challenge_method: " << code_challenge_method << std::endl;
-        std::cout << "code_challenge: " << code_challenge << std::endl;
-    });
-}
-
-// start server
-void Server::start() {
-    std::cout << "Local Server has been initialized" << std::endl;
-    server_thread = std::thread([this](){
-        server.listen("localhost", port);
-    });
-}
-
-// Stop server
-void Server::stop() {
-    server.stop(); // stop server gracefully
-    if (server_thread.joinable()) {
-        server_thread.join(); // join the server thread
+    // Parse query params
+    std::cout << "Callback Response from Spotify: " << query_params << std::endl;
+    if (query_params != "") {
+        // terminate the server thread, callback was received
+        *spotifyAuthorizationCodePtr = std::move(query_params);
+        return true;
     }
-    std::cout << "Local Server has been terminated" << std::endl;
+    return false;
+}
+
+void runServer(int* running, std::string* spotifyAuthorizationCodePtr) {
+    boost::asio::io_context io_context;
+    tcp::acceptor acceptor(io_context, {tcp::v4(), 8888});
+
+    bool callbackReceived = false;
+    while (*running && !callbackReceived) {
+        tcp::socket socket(io_context);
+        acceptor.accept(socket);
+
+        // read the HTTP request
+        boost::beast::flat_buffer buffer;
+        http::request<http::string_body> request;
+        boost::beast::http::read(socket, buffer, request);
+
+        // Handle the request
+        callbackReceived = handleRequest(request, socket, spotifyAuthorizationCodePtr);
+
+        // close the socket
+        socket.shutdown(tcp::socket::shutdown_send);
+        boost_swap_impl::this_thread::sleep_for(boost_swap_impl::chrono::seconds(1));
+    }
 }

@@ -7,18 +7,22 @@
 
 
 // Constructor definition
-Song::Song(string songName, list<string> artists, string album, string genre, double timeLength) {
+Song::Song(string songName, vector<string> artists, string album, double timeLength, string release) {
     this->songName = std::move(songName);
     this->artists = std::move(artists);
-    this->genre = std::move(genre);
     this->album = std::move(album);
+    this->release = std::move(release);
     this->timeLength = timeLength;
 }
+
+// setter method definitions
+void Song::setSpotifyURI(std::string uri) {this->spotifyURI = std::move(uri);}
 
 // getter method definitions
 double Song::getTime() { return timeLength;}
 string Song::getName() {return songName;}
-list<string> Song::getArtists() {return artists;}
-string Song::getGenre() {return genre;}
+vector<string> Song::getArtists() {return artists;}
 string Song::getAlbum() {return album;}
+string Song::getRelease() {return release;}
+string Song::getSpotifyURI() {return spotifyURI;}
 
